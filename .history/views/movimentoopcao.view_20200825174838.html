@@ -1,0 +1,139 @@
+<div class="row text-center">
+  <input type="text" ng-model="filtro" class="form-control">
+</div>
+<div class="row text-center">
+  <dir-pagination-controls>
+  </dir-pagination-controls>
+</div>
+{{lucro}}
+<div class="row text-center">
+  <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="editar()">
+    <i class="material-icons">insert_drive_file</i>
+  </button>
+</div>
+
+<div class="row">
+  <table class="table table-striped">
+    <thead>
+      <th>Opção</th>
+      <th>Quantidade</th>
+      <th>Data Venda</th>
+      <th>Valor Strike</th>
+      <th>Valor Premio</th>
+      <th>%</th>
+      <th>Credito</th>
+
+
+
+      <th></th>
+    </thead>
+    <tbody>
+      <!-- Listagem -->
+      <Tr dir-paginate="dt in data | filter: filtro | orderBy: 'dataVenda' | itemsPerPage:15 ">
+
+        <td>{{dt.opcao.acao.codigo + dt.opcao.serie.descricao + dt.opcao.descricao}}</td>
+        <td>{{dt.quantidade}}</td>
+        <td>{{dt.dataVenda | date:'dd/MM/yyyy'}}</td>
+        <td>{{dt.opcao.valorStrike | currency }}</td>
+        <td>{{dt.valorPremio | currency}}</td>
+        <td>{{(dt.valorPremio / dt.opcao.valorStrike) * 100 | number : 2}}</td>
+        <td>{{dt.valorPremio * dt.quantidade | currency}}</td>
+
+        <td>
+          <div ng-hide="dt.finalizado">
+            <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="editar(dt)">
+              <i class="material-icons">border_color</i>
+            </button>
+
+            <button class="btn btn-sm btn-white " ng-click="exercicio(dt,true)">
+              exercicio
+            </button>
+
+            <button class="btn btn-sm btn-white" ng-click="exercicio(dt,false)">
+              nao exercicio
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalupload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cadastro de cliente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form ng-submit="salvar(up)" name="form">
+          <div class="row">
+
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Opção</label>
+                <select class="form-control"
+                  ng-options="item.opcaoId as (item.acao.codigo + item.serie.descricao + item.descricao ) for item in opcoes"
+                  ng-model="up.opcaoId" ng-disabled="up.movimentoOpcaoId">
+
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Ação</label>
+                <select class="form-control"
+                  ng-options="item.movimentoAcaoId as (item.acao.codigo + ' ' + item.dataCompra + ' ' + item.valorCompra ) for item in movimentoAcao | filter:{acaoId: up.opcao.acaoId}"
+                  ng-model="up.movimentoAcaoId">
+
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Quantidade</label>
+                <input type="number" class="form-control" ng-model="up.quantidade">
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Data venda</label>
+                <input type="text" class="form-control" ng-model="up.dataVenda">
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Valor Premio</label>
+                <input type="number" step="any" class="form-control" ng-model="up.valorPremio">
+              </div>
+            </div>
+
+
+          </div>
+
+
+
+          <div class="row">
+            <button type="button" class="btn btn-secondary" ng-click="up = {}" data-dismiss="modal">Cancelar</button>
+            <input type="submit" class="btn btn-primary" ng-disabled="!up.opcaoId" value="Salvar">
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>

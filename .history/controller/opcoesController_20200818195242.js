@@ -1,0 +1,60 @@
+'use strict'
+
+app.controller('opcoesCtrl', ['$scope', '$http', 'api', function ($scope, $http, api) {
+
+
+	$http.get(api.url + '/opcao').then(function (data) {
+		$scope.data = data.data
+	})
+	$http.get(api.url + '/acao').then(function (data) {
+		$scope.acoes = data.data
+
+	})
+	$http.get(api.url + '/serie').then(function (data) {
+		$scope.series = data.data
+	})
+
+
+	$scope.editar = function (dados) {
+		if (!angular.isUndefined(dados)) {
+			$scope.dados = dados;
+			$scope.up2 = dados;
+			$scope.up = angular.copy(dados);
+		}
+		else {
+			$scope.dados = null;
+			$scope.up2 = null;
+			$scope.up = null;
+		}
+		$('#modalupload').modal('show');
+	}
+
+	function save(form) {
+		$http.post(api.url + '/opcao', form).then(function (data) {
+			$scope.data.push(data.data);
+			//snackbar.create("Cadastrado com sucesso");
+			$('#modalupload').modal('hide');
+
+		})
+
+	}
+	function update(form) {
+		$http.put(api.url + '/opcao/' + form.opcaoId, form).then(function (data) {
+			console.log(data);
+			$scope.data[$scope.data.indexOf($scope.dados)] = data.data
+			//snackbar.create("Dados atualiazdos com sucesso!")
+			$('#modalupload').modal('hide');
+		})
+	}
+	$scope.salvar = function (form) {
+
+		if (!form.opcaoId) {
+			var data = save(form);
+		}
+		else { var data = update(form); }
+	}
+
+}])
+
+
+

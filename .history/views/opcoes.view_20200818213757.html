@@ -1,0 +1,106 @@
+<div class="row text-center">
+  <input type="text" ng-model="filtro" class="form-control">
+</div>
+<div class="row text-center">
+  <dir-pagination-controls>
+  </dir-pagination-controls>
+</div>
+<div class="row text-center">
+  <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="editar()">
+    <i class="material-icons">insert_drive_file</i>
+  </button>
+</div>
+
+<div class="row">
+  <table class="table table-striped">
+    <thead>
+      <th>Opção</th>
+      <th>Strike</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <!-- Listagem -->
+      <Tr dir-paginate="dt in data | filter: filtro | itemsPerPage:15 ">
+
+        <td>{{dt.acao.codigo + dt.serie.descricao + dt.descricao}}</td>
+        <td>{{dt.valorStrike}}</td>
+
+
+        <td>
+
+          <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="editar(dt)">
+            <i class="material-icons">border_color</i>
+          </button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalupload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cadastro de cliente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form ng-submit="salvar(up)" name="form">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Ação</label>
+                <select class="form-control"
+                  ng-options="item.acaoId as item.descricao for item in acoes track by item.acaoId"
+                  ng-model="up.acaoId">
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Codigo</label>
+                <input type="text" class="form-control" ng-model="up.descricao">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Valor Strike</label>
+                <input type="number" step="any" class="form-control" ng-model="up.valorStrike">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="bmd-label-floating">Serie</label>
+                <select class="form-control"
+                  ng-options="item.serieId as item.descricao for item in series track by item.serieId"
+                  ng-model="up.serieId" ng-selected="up.serieId == item.serieId">
+
+                </select>
+                {{up.serieId}}
+              </div>
+            </div>
+
+
+          </div>
+
+
+
+          <div class="row">
+            <button type="button" class="btn btn-secondary" ng-click="up = {}" data-dismiss="modal">Cancelar</button>
+            <input type="submit" class="btn btn-primary" ng-disabled="!up.descricao" value="Salvar">
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>

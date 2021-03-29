@@ -1,0 +1,265 @@
+
+<style>
+
+
+.menu{
+  width:0px;
+  background-color:#ccc;
+  position:fixed;
+  border: none;
+  left:0;
+  -webkit-transition: width 0.5s ease-in-out;
+  -moz-transition: width 0.5s ease-in-out;
+  -o-transition: width 0.5s ease-in-out;
+  transition: width 0.5s ease-in-out;
+  overflow: hidden;
+  z-index: 9999;
+  
+}
+
+.menu.is-visible{
+  width:400px;
+  -webkit-transition: width 0.5s ease-in-out;
+    -moz-transition: width 0.5s ease-in-out;
+}
+
+</style>
+<div ng-class="{'is-visible':visible}" class="menu">
+  <div class="right">
+    <button ng-click="visible=false;">
+      <i class="small material-icons">close</i>
+   </button>
+   <strong>{{nome}}</strong>
+</div>
+
+  <img ng-src="data:image/JPEG;base64,{{graph[0]}}" style="max-width:400px">
+  <img ng-src="data:image/JPEG;base64,{{graph[1]}}" style="max-width:400px">
+  <img ng-src="data:image/JPEG;base64,{{graph[2]}}" style="max-width:400px">
+  <img ng-src="data:image/JPEG;base64,{{graph[3]}}" style="max-width:400px">
+  
+</div>
+
+<div class="row text-center">
+  {{ (data | filter: filtro | filter: filtroAtivos).length }}
+</div>
+	<div class="row text-center">
+		<input type="text" ng-model="filtro" class="form-control">
+  </div>
+  <div class="row text-center">
+    <input type="checkbox" ng-model="ativos" ><label>Ativos</label>
+  </div>
+	<div class="row text-center" >
+		<dir-pagination-controls>
+	    </dir-pagination-controls>
+	</div>
+
+<div class="row">
+		<table class="table table-striped" >
+			<thead>
+				<th>Nome</th>
+				<th>Cpf</th>
+        <th>Plano</th>
+        <th>Valor</th>
+				<th></th>
+			</thead>
+			<tbody>
+				<!-- Listagem -->
+				<Tr dir-paginate="dt in data | filter: filtro | filter: filtroAtivos | itemsPerPage:15 " >
+					<td>{{dt.nome}}</td>
+					<td>{{dt.cpfcnpj}}</td>
+
+          <td>{{dt.cliente_plano.planos.nome}}</td>
+          <td>{{dt.vlr}}</td>
+					
+					<td>
+					
+					<button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="editar(dt)">
+                          <i class="material-icons">edit</i>
+                    </button>
+
+                    <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="grafico(dt)">
+                      <i class="material-icons">gradient</i>
+                </button>
+
+                <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="lista_parcelas(dt)">
+                  <i class="material-icons">attach_money</i>
+            </button>
+                
+		
+					</td>
+				</tr>
+			</tbody>
+		</table>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalupload" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Cadastro de cliente</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form ng-submit="salvar(up)" name="form">
+                    <div class="row">
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Nome</label>
+                          <input type="text" class="form-control" ng-model="up.nome">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Cpf</label>
+                          <input type="text" class="form-control" ng-model="up.cpfcnpj">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Email</label>
+                          <input type="text" class="form-control" ng-model="up.email">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Vlr</label>
+                          <input type="number" step="0.01" class="form-control" ng-model="up.vlr">
+                        </div>
+                      </div>
+					  
+					  <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Plano</label>
+                          {{planos}}
+                       <!--   <select class="form-control" ng-options="x.id as x.nome for x in planos" ng-model="up.cliente_plano.idplano"></select> -->
+                       <select ng-options="item.id as item.nome for item in planos track by planos.id" ng-model="up.cliente_plano"></select>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Mikrotik</label>
+                          <input type="text" class="form-control" ng-model="up.ip">
+                        </div>
+                      </div>
+                    </div>
+
+                    
+
+
+
+                    <div class="row text-center">
+                      <button type="button" class="btn btn-secondary" ng-click="up = {}"  data-dismiss="modal">Cancelar</button>
+                      <input type="submit" class="btn btn-primary" ng-disabled="!up.nome" value="Salvar">
+                    </div>
+
+
+                  </form>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+        <div class="modal fade" id="modalParcelas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Parcelas do cliente {{up.nome}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="row text-center" >
+                    <dir-pagination-controls pagination-id="cust">
+                      </dir-pagination-controls>
+                  </div>
+                  <div class="row text-center">
+                    <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="gerarBoletos()" title="Gerar Boletos">
+                      <i class="material-icons">attach_money</i>
+                    </button>
+
+                    <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="syncBoletos()" title="Sincronizar Boletos">
+                      <i class="material-icons"> sync_problem</i>
+                    </button>
+
+                    <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="printBoletos()" title="Imprimir boletos">
+                      <i class="material-icons"> print</i>
+                    </button>
+
+                    <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="cancelarERemoverParcelas(false)" title="Remover boletos"> 
+                      <i class="material-icons">remove_circle</i>
+                    </button>
+
+                   
+                    <button class="btn btn-sm btn-white btn-round btn-just-icon" ng-click="cancelarERemoverParcelas(true)" title="Cancelar e remover boletos"> 
+                      <i class="material-icons">cancel</i>
+                    </button>
+
+                    
+
+                    
+
+                  </div>
+                  <table class="table table-striped" >
+                    <thead>
+                      <th>#</th>
+                      <th>Vencimento</th>
+                      <th>Pagamento</th>
+                      <th>Valor</th>
+                      <th>Pago</th>
+                      <th>Status Boleto</th>
+                      
+                    </thead>
+                    <tbody>
+                      <!-- Listagem -->
+                      <Tr dir-paginate="dt in parcelas | itemsPerPage:10 " pagination-id="cust">
+                        <td>
+                          <input ng-show="(dt.data_pag | date : 'dd/MM/yyyy') == '01/01/0001'" type="checkbox" ng-model="dt.Selected" >
+                  
+                              
+                               
+                   
+                         </td>
+                        <td>{{dt.data_venc | date : 'dd/MM/yyyy'}}</td>
+                        <td>{{(dt.data_pag | date : 'dd/MM/yyyy') == '01/01/0001' ? '' : (dt.data_pag | date : 'dd/MM/yyyy') }}</td>
+              
+                        <td>{{dt.vlr_cob | currency: "R$" : 2}}</td>
+                        <td>{{dt.vlr_pag | currency: "R$" : 2}}</td>
+                        <td>{{dt.codigo_barra ? 
+                          (dt.data_pag | date : 'dd/MM/yyyy') == '01/01/0001' ?  "aguardando pagamento"  : "pago"
+                          
+                          : 
+                          ((dt.data_pag | date : 'dd/MM/yyyy') != '01/01/0001') ? "pago" : "não gerado"
+                        
+                        }}</td>
+                        
+                        
+                      </tr>
+                    </tbody>
+                  </table>
+
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        
